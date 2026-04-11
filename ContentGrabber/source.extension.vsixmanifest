@@ -8,7 +8,7 @@
     <Description>Copies the content from selected files as markdown, including code fences and project-relative paths. Suitable for pasting into an LLM prompt.</Description>
     <License>LICENSE.txt</License>
     <Tags>markdown, clipboard</Tags>
-    <MoreInfo>https://github.com/yourrepo/ContentGrabber</MoreInfo>
+    <MoreInfo>https://github.com/DVaughan/ContentGrabberVSExtension</MoreInfo>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,)">
