@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
-    partial class PartialClass1
-    {
-        public void Foo()
-        {
-        }
-    }
+	partial class PartialClass1
+	{
+		public void Foo()
+		{
+		}
+	}
 }
