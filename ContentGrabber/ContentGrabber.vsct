@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable">
+
+	<Extern href="stdidcmd.h" />
+	<Extern href="vsshlids.h" />
+
+	<Commands package="guidContentGrabberPackage">
+		<Groups>
+			<Group guid="guidContentGrabberCommandSet" id="MyMenuGroup" priority="0x0600">
+				<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE" />
+			</Group>
+		</Groups>
+
+		<Buttons>
+			<Button guid="guidContentGrabberCommandSet" id="CopyContentAsMarkdownCommandId" priority="0x0100" type="Button">
+				<Parent guid="guidContentGrabberCommandSet" id="MyMenuGroup" />
+				<Strings>
+					<ButtonText>Copy as Markdown</ButtonText>
+				</Strings>
+			</Button>
+		</Buttons>
+	</Commands>
+
+	<Symbols>
+		<GuidSymbol name="guidContentGrabberPackage" value="{F55A5380-74FC-4025-9261-B24846C27C20}" />
+		<GuidSymbol name="guidContentGrabberCommandSet" value="{3D6C9C9E-6B6A-4A1E-9F1A-2F4C6F9B2C11}">
+			<IDSymbol name="MyMenuGroup" value="0x1020" />
+			<IDSymbol name="CopyContentAsMarkdownCommandId" value="0x0100" />
+		</GuidSymbol>
+	</Symbols>
+</CommandTable>
