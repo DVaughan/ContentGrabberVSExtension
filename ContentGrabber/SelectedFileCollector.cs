@@ -9,6 +9,8 @@ namespace ContentGrabber
 {
 	class SelectedFileCollector
 	{
+		readonly ProjectPathResolver projectPathResolver = new ProjectPathResolver();
+
 		public IReadOnlyList<SelectedFile> GetSelectedFiles(DTE2 dte)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
@@ -38,13 +40,16 @@ namespace ContentGrabber
 			return results;
 		}
 
-		void TryAddProjectItemFiles(ProjectItem projectItem, List<SelectedFile> results, HashSet<string> seen)
+		void TryAddProjectItemFiles(ProjectItem projectItem,
+									List<SelectedFile> results,
+									HashSet<string> seen)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
 			try
 			{
 				short fileCount = projectItem.FileCount;
+
 				for (short index = 1; index <= fileCount; index++)
 				{
 					string filePath = projectItem.FileNames[index];
@@ -59,7 +64,10 @@ namespace ContentGrabber
 			}
 		}
 
-		void TryAddFile(string filePath, string displayPath, List<SelectedFile> results, HashSet<string> seen)
+		void TryAddFile(string filePath,
+						string displayPath,
+						List<SelectedFile> results,
+						HashSet<string> seen)
 		{
 			if (string.IsNullOrWhiteSpace(filePath))
 			{
@@ -86,39 +94,15 @@ namespace ContentGrabber
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
-			string projectRelativePath = TryGetProjectRelativePath(projectItem);
+			string projectRelativePath
+				= projectPathResolver.TryGetProjectRelativePath(projectItem);
+
 			if (!string.IsNullOrWhiteSpace(projectRelativePath))
 			{
 				return projectRelativePath;
 			}
 
 			return Path.GetFileName(filePath);
-		}
-
-		string TryGetProjectRelativePath(ProjectItem projectItem)
-		{
-			ThreadHelper.ThrowIfNotOnUIThread();
-
-			var parts = new Stack<string>();
-			ProjectItem currentItem = projectItem;
-
-			while (currentItem != null)
-			{
-				if (string.IsNullOrWhiteSpace(currentItem.Name))
-				{
-					break;
-				}
-
-				parts.Push(currentItem.Name);
-				currentItem = currentItem.Collection?.Parent as ProjectItem;
-			}
-
-			if (parts.Count == 0)
-			{
-				return string.Empty;
-			}
-
-			return string.Join("/", parts);
 		}
 	}
 }

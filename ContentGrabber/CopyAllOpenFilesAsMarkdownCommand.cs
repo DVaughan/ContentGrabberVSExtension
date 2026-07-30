@@ -1,26 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Threading.Tasks;
 using System.Windows;
+
 using EnvDTE80;
+
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ContentGrabber
 {
-	sealed class CopyContentAsMarkdownCommand
+	sealed class CopyAllOpenFilesAsMarkdownCommand
 	{
-		public const int CommandId = 0x0100;
-		public static readonly Guid CommandSet = new Guid("3d6c9c9e-6b6a-4a1e-9f1a-2f4c6f9b2c11");
+		public const int CommandId = 0x0102;
+
+		public static readonly Guid CommandSet
+			= new Guid("3d6c9c9e-6b6a-4a1e-9f1a-2f4c6f9b2c11");
 
 		readonly AsyncPackage package;
 
-		CopyContentAsMarkdownCommand(AsyncPackage package, OleMenuCommandService commandService)
+		CopyAllOpenFilesAsMarkdownCommand(
+			AsyncPackage package,
+			OleMenuCommandService commandService)
 		{
 			this.package = package ?? throw new ArgumentNullException(nameof(package));
 
 			var commandId = new CommandID(CommandSet, CommandId);
 			var menuItem = new OleMenuCommand(Execute, commandId);
+
 			menuItem.BeforeQueryStatus += OnBeforeQueryStatus;
 
 			commandService.AddCommand(menuItem);
@@ -30,15 +38,17 @@ namespace ContentGrabber
 		{
 			await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-			var commandService = await package.GetServiceAsync(typeof(IMenuCommandService))
-									 as OleMenuCommandService;
+			var commandService
+				= await package.GetServiceAsync(typeof(IMenuCommandService))
+					  as OleMenuCommandService;
 
 			if (commandService == null)
 			{
-				throw new InvalidOperationException("Unable to get menu command service.");
+				throw new InvalidOperationException(
+					"Unable to get menu command service.");
 			}
 
-			_ = new CopyContentAsMarkdownCommand(package, commandService);
+			_ = new CopyAllOpenFilesAsMarkdownCommand(package, commandService);
 		}
 
 		void OnBeforeQueryStatus(object sender, EventArgs e)
@@ -52,25 +62,10 @@ namespace ContentGrabber
 				return;
 			}
 
+			DTE2 dte = GetDte();
+
 			menuCommand.Visible = true;
-			menuCommand.Enabled = HasSelectedFiles();
-		}
-
-		bool HasSelectedFiles()
-		{
-			ThreadHelper.ThrowIfNotOnUIThread();
-
-			var dte = GetDte();
-
-			if (dte == null)
-			{
-				return false;
-			}
-
-			var collector = new SelectedFileCollector();
-			var selectedFiles = collector.GetSelectedFiles(dte);
-
-			return selectedFiles.Count > 0;
+			menuCommand.Enabled = dte != null && dte.Documents.Count > 0;
 		}
 
 		void Execute(object sender, EventArgs e)
@@ -79,29 +74,34 @@ namespace ContentGrabber
 
 			try
 			{
-				var dte = GetDte();
+				DTE2 dte = GetDte();
 				if (dte == null)
 				{
 					ShowMessage("Unable to access Visual Studio services.");
+
 					return;
 				}
 
-				var collector = new SelectedFileCollector();
+				var collector = new OpenFileCollector();
+
+				IReadOnlyList<SelectedFile> files
+					= collector.GetOpenFiles(dte);
+
+				if (files.Count == 0)
+				{
+					ShowMessage("No readable open text files were found.");
+
+					return;
+				}
+
 				var formatter = new MarkdownFileFormatter();
 
-				var selectedFiles = collector.GetSelectedFiles(dte);
-
-				if (selectedFiles.Count == 0)
-				{
-					ShowMessage("No files were selected.");
-					return;
-				}
-
-				string markdown = formatter.BuildMarkdown(selectedFiles);
+				string markdown = formatter.BuildMarkdown(files);
 
 				if (string.IsNullOrWhiteSpace(markdown))
 				{
-					ShowMessage("No readable files were found.");
+					ShowMessage("No readable content was found.");
+
 					return;
 				}
 
@@ -117,9 +117,11 @@ namespace ContentGrabber
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
-			return package.GetServiceAsync(typeof(SDTE))
-						  .ConfigureAwait(false)
-						  .GetAwaiter().GetResult() as DTE2;
+			return package
+				.GetServiceAsync(typeof(SDTE))
+				.ConfigureAwait(false)
+				.GetAwaiter()
+				.GetResult() as DTE2;
 		}
 
 		void ShowMessage(string message)
@@ -130,9 +132,9 @@ namespace ContentGrabber
 				package,
 				message,
 				"ContentGrabber",
-				Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_INFO,
-				Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_OK,
-				Microsoft.VisualStudio.Shell.Interop.OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+				OLEMSGICON.OLEMSGICON_INFO,
+				OLEMSGBUTTON.OLEMSGBUTTON_OK,
+				OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
 		}
 	}
 }

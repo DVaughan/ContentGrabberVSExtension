@@ -45,8 +45,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CopyAllOpenFilesAsMarkdownCommand.cs" />
     <Compile Include="CopyContentAsMarkdownCommand.cs" />
+    <Compile Include="CopyOpenFileAsMarkdownCommand.cs" />
     <Compile Include="MarkdownFileFormatter.cs" />
+    <Compile Include="OpenDocumentContentReader.cs" />
+    <Compile Include="OpenFileCollector.cs" />
+    <Compile Include="ProjectPathResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ContentGrabberPackage.cs" />
     <Compile Include="SelectedFile.cs" />

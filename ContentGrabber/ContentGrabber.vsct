@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable">
 
 	<Extern href="stdidcmd.h" />
@@ -6,26 +7,91 @@
 
 	<Commands package="guidContentGrabberPackage">
 		<Groups>
-			<Group guid="guidContentGrabberCommandSet" id="MyMenuGroup" priority="0x0600">
+			<Group guid="guidContentGrabberCommandSet"
+				   id="SolutionExplorerMenuGroup"
+				   priority="0x0600">
 				<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE" />
+			</Group>
+
+			<Group guid="guidContentGrabberCommandSet"
+				   id="ProjectNodeMenuGroup"
+				   priority="0x0600">
+				<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
+			</Group>
+
+			<Group guid="guidContentGrabberCommandSet"
+				   id="DocumentTabMenuGroup"
+				   priority="0x0600">
+				<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_EZDOCWINTAB" />
 			</Group>
 		</Groups>
 
 		<Buttons>
-			<Button guid="guidContentGrabberCommandSet" id="CopyContentAsMarkdownCommandId" priority="0x0100" type="Button">
-				<Parent guid="guidContentGrabberCommandSet" id="MyMenuGroup" />
+			<!-- Solution Explorer context menu -->
+			<Button guid="guidContentGrabberCommandSet"
+					id="CopyContentAsMarkdownCommandId"
+					priority="0x0100"
+					type="Button">
+				<Parent guid="guidContentGrabberCommandSet"
+						id="SolutionExplorerMenuGroup" />
 				<Strings>
 					<ButtonText>Copy as Markdown</ButtonText>
 				</Strings>
 			</Button>
+
+			<!-- Tab context menu items -->
+
+			<Button guid="guidContentGrabberCommandSet"
+			        id="CopyOpenFileAsMarkdownCommandId"
+			        priority="0x0100"
+			        type="Button">
+				<Parent guid="guidContentGrabberCommandSet"
+						id="DocumentTabMenuGroup" />
+				<Strings>
+					<ButtonText>Copy as Markdown</ButtonText>
+				</Strings>
+			</Button>
+
+			<Button guid="guidContentGrabberCommandSet"
+			        id="CopyAllOpenFilesAsMarkdownCommandId"
+			        priority="0x0110"
+			        type="Button">
+				<Parent guid="guidContentGrabberCommandSet"
+				        id="DocumentTabMenuGroup" />
+				<Strings>
+					<ButtonText>Copy All as Markdown</ButtonText>
+				</Strings>
+			</Button>
+
 		</Buttons>
 	</Commands>
 
+	<CommandPlacements>
+		<CommandPlacement guid="guidContentGrabberCommandSet"
+		                  id="CopyContentAsMarkdownCommandId"
+		                  priority="0x0100">
+			<Parent guid="guidContentGrabberCommandSet"
+			        id="ProjectNodeMenuGroup" />
+		</CommandPlacement>
+	</CommandPlacements>
+
 	<Symbols>
-		<GuidSymbol name="guidContentGrabberPackage" value="{F55A5380-74FC-4025-9261-B24846C27C20}" />
-		<GuidSymbol name="guidContentGrabberCommandSet" value="{3D6C9C9E-6B6A-4A1E-9F1A-2F4C6F9B2C11}">
-			<IDSymbol name="MyMenuGroup" value="0x1020" />
+		<GuidSymbol name="guidContentGrabberPackage"
+					value="{F55A5380-74FC-4025-9261-B24846C27C20}" />
+
+		<GuidSymbol name="guidContentGrabberCommandSet"
+					value="{3D6C9C9E-6B6A-4A1E-9F1A-2F4C6F9B2C11}">
+			
+			<IDSymbol name="SolutionExplorerMenuGroup" value="0x1020" />
+
+			<IDSymbol name="DocumentTabMenuGroup" value="0x1021" />
+			<IDSymbol name="ProjectNodeMenuGroup" value="0x1022" />
 			<IDSymbol name="CopyContentAsMarkdownCommandId" value="0x0100" />
+
+			<!-- Tab context menu -->
+			<IDSymbol name="CopyOpenFileAsMarkdownCommandId" value="0x0101" />
+			<IDSymbol name="CopyAllOpenFilesAsMarkdownCommandId" value="0x0102" />
 		</GuidSymbol>
+
 	</Symbols>
 </CommandTable>

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="ContentGrabber.fd91b22e-fde0-462d-b83b-c18c23963cfd" Version="1.0.0" Language="en-US" Publisher="Daniel Vaughan" />
+        <Identity Id="ContentGrabber.fd91b22e-fde0-462d-b83b-c18c23963cfd" Version="1.1.0" Language="en-US" Publisher="Daniel Vaughan" />
         <DisplayName>Content Grabber</DisplayName>
         <Author>Daniel Vaughan</Author>
-        <Version>1.0</Version>
-        <Description xml:space="preserve">Copies the content from selected files as markdown, including code fences and project-relative paths. Suitable for pasting into an LLM prompt.</Description>
+        <Version>1.1</Version>
+        <Description xml:space="preserve">Copies the contents of selected files or open document tabs as Markdown, including code fences and project-relative paths. Suitable for pasting into an LLM prompt.</Description>
         <MoreInfo>https://github.com/DVaughan/ContentGrabberVSExtension</MoreInfo>
         <License>LICENSE.txt</License>
         <Icon>ContentGrabberIcon90.png</Icon>
         <PreviewImage>VSScreenshot.png</PreviewImage>
-        <Tags>markdown, clipboard</Tags>
+        <Tags>markdown, clipboard, llm</Tags>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,)">

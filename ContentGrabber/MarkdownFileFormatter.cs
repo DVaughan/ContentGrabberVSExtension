@@ -46,14 +46,20 @@ namespace ContentGrabber
 
 			foreach (SelectedFile file in files)
 			{
-				if (!File.Exists(file.FullPath))
+				string content = file.CurrentContent;
+
+				if (content == null)
 				{
-					continue;
+					if (!File.Exists(file.FullPath))
+					{
+						continue;
+					}
+
+					content = File.ReadAllText(file.FullPath);
 				}
 
 				string extension = Path.GetExtension(file.FullPath);
 				string language = GetLanguage(extension);
-				string content = File.ReadAllText(file.FullPath);
 
 				builder.AppendLine(file.DisplayPath + ":");
 				builder.AppendLine("```"            + language);
