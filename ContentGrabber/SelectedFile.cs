@@ -4,26 +4,22 @@ namespace ContentGrabber
 {
 	class SelectedFile
 	{
-		public SelectedFile(string fullPath, string displayPath)
-			: this(fullPath, displayPath, null)
-		{
-		}
-
 		public SelectedFile(string fullPath,
 							string displayPath,
-							string currentContent)
+							string projectName,
+							string currentContent = null)
 		{
-			FullPath       = fullPath
-							 ?? throw new ArgumentNullException(nameof(fullPath));
-			DisplayPath    = displayPath
-							 ?? throw new ArgumentNullException(nameof(displayPath));
-
+			FullPath       = fullPath    ?? throw new ArgumentNullException(nameof(fullPath));
+			DisplayPath    = displayPath ?? throw new ArgumentNullException(nameof(displayPath));
+			ProjectName    = projectName;
 			CurrentContent = currentContent;
 		}
 
 		public string FullPath { get; }
 
 		public string DisplayPath { get; }
+
+		public string ProjectName { get; }
 
 		/*
 		 * Null means that the formatter should read the file from disk.

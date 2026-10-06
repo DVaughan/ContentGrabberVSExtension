@@ -42,6 +42,11 @@ namespace ContentGrabber
 
 			foreach (Document document in dte.Documents)
 			{
+				if (!HasVisibleWindow(document))
+				{
+					continue;
+				}
+
 				if (!TryCreateFile(document, out SelectedFile file))
 				{
 					continue;
@@ -92,9 +97,29 @@ namespace ContentGrabber
 			string displayPath
 				= GetDisplayPathForOpenDocument(document, filePath);
 
-			file = new SelectedFile(filePath, displayPath, content);
+			string projectName = GetProjectName(document);
+
+			file = new SelectedFile(
+				filePath,
+				displayPath,
+				projectName,
+				content);
 
 			return true;
+		}
+
+		string GetProjectName(Document document)
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
+			try
+			{
+				return document.ProjectItem?.ContainingProject?.Name;
+			}
+			catch
+			{
+				return null;
+			}
 		}
 
 		string GetDisplayPathForOpenDocument(
@@ -124,6 +149,28 @@ namespace ContentGrabber
 			}
 
 			return Path.GetFileName(filePath);
+		}
+
+		bool HasVisibleWindow(Document document)
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
+			try
+			{
+				foreach (Window window in document.Windows)
+				{
+					if (window.Visible)
+					{
+						return true;
+					}
+				}
+			}
+			catch
+			{
+				/* Treat documents whose windows cannot be inspected as not visible. */
+			}
+
+			return false;
 		}
 	}
 }

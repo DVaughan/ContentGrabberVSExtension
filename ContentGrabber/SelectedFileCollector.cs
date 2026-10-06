@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+
 using EnvDTE;
+
 using EnvDTE80;
+
 using Microsoft.VisualStudio.Shell;
 
 namespace ContentGrabber
@@ -15,8 +18,8 @@ namespace ContentGrabber
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 
-			var results = new List<SelectedFile>();
-			var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			List<SelectedFile> results = new List<SelectedFile>();
+			HashSet<string> seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
 			foreach (SelectedItem selectedItem in dte.SelectedItems)
 			{
@@ -33,7 +36,11 @@ namespace ContentGrabber
 					string filePath = project.FullName;
 					string displayPath = Path.GetFileName(filePath);
 
-					TryAddFile(filePath, displayPath, results, seen);
+					TryAddFile(filePath,
+						displayPath,
+						project.Name,
+						results,
+						seen);
 				}
 			}
 
@@ -54,8 +61,14 @@ namespace ContentGrabber
 				{
 					string filePath = projectItem.FileNames[index];
 					string displayPath = GetDisplayPath(projectItem, filePath);
+					string projectName = projectItem.ContainingProject?.Name;
 
-					TryAddFile(filePath, displayPath, results, seen);
+					TryAddFile(
+						filePath,
+						displayPath,
+						projectName,
+						results,
+						seen);
 				}
 			}
 			catch
@@ -66,6 +79,7 @@ namespace ContentGrabber
 
 		void TryAddFile(string filePath,
 						string displayPath,
+						string projectName,
 						List<SelectedFile> results,
 						HashSet<string> seen)
 		{
@@ -86,7 +100,8 @@ namespace ContentGrabber
 
 			if (seen.Add(filePath))
 			{
-				results.Add(new SelectedFile(filePath, displayPath));
+				results.Add(
+					new SelectedFile(filePath, displayPath, projectName));
 			}
 		}
 

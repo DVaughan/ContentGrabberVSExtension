@@ -61,6 +61,11 @@ namespace ContentGrabber
 				string extension = Path.GetExtension(file.FullPath);
 				string language = GetLanguage(extension);
 
+				if (!string.IsNullOrWhiteSpace(file.ProjectName))
+				{
+					builder.AppendLine("Project: " + file.ProjectName);
+				}
+
 				builder.AppendLine(file.DisplayPath + ":");
 				builder.AppendLine("```"            + language);
 				builder.AppendLine(EscapeFenceContent(content));

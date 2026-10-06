@@ -9,7 +9,7 @@ namespace ContentGrabber
 	[PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
 	[InstalledProductRegistration(
 		"ContentGrabber",
-		"Copy selected or open file contents as markdown", "1.1")]
+		"Copy selected or open file contents as markdown", "1.2")]
 	[ProvideMenuResource("Menus.ctmenu", 1)]
 	[Guid(PackageGuidString)]
 	public sealed class ContentGrabberPackage : AsyncPackage
